@@ -4,13 +4,14 @@ schema {
 }
 
 type Link {
+    id: ID!
     url: String!
     description: String!
 }
 
 type Query {
     allLinks: [Link]
-   linkByUrl (url: String!) : Link
+    linkByUrl (url: String!) : Link
 }
 
 

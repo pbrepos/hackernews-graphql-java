@@ -17,7 +17,7 @@ public class Query implements GraphQLRootResolver {
         return linkRepository.getAllLinks();
     }
 
-    public Link linkByUrl(String url) {
-        return linkRepository.getLinkBy(url);
+    public Link linkByUrl(String id) {
+        return linkRepository.findById(id);
     }
 }

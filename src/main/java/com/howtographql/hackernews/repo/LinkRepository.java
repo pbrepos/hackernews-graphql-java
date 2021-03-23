@@ -1,28 +1,40 @@
 package com.howtographql.hackernews.repo;
 
 import com.howtographql.hackernews.resolvers.Link;
+import com.mongodb.client.MongoCollection;
+import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class LinkRepository {
-    private final List<Link> links;
+import static com.mongodb.client.model.Filters.eq;
 
-    public LinkRepository() {
-        links = new ArrayList<>();
-        links.add(new Link("http://howtographql.com", "Your favorite GraphQL page"));
-        links.add(new Link("http://graphql.org/learn/", "The official docks"));
+public class LinkRepository {
+    private final MongoCollection<Document> links;
+
+    public LinkRepository(MongoCollection<Document> links) {
+        this.links = links;
     }
 
     public List<Link> getAllLinks() {
-        return links;
+        List<Link> allLinks = new ArrayList<>();
+        for (Document doc: links.find()) {
+            allLinks.add(link(doc));
+        }
+        return allLinks;
+    }
+
+    public Link findById(String id) {
+        Document doc = links.find(eq("_id", new ObjectId(id))).first();
+        return link(doc);
     }
 
     public Link getLinkBy(String url) {
         Link result = null;
-        for (Link link : links) {
-            if (link.getUrl().equals(url)) {
-                result = link;
+        for (Document doc: links.find()) {
+            if (doc.getString("url").equals(url)) {
+                result = link(doc);
                 break;
             }
         }
@@ -30,7 +42,17 @@ public class LinkRepository {
         return result;
     }
 
+
+    private Link link(Document doc) {
+        return new Link(doc.get("_id").toString(),
+                doc.getString("url"),
+                doc.getString("description"));
+    }
+
     public void saveLink(Link link) {
-        links.add(link);
+        Document doc = new Document();
+        doc.append("url", link.getUrl());
+        doc.append("description", link.getDescription());
+        links.insertOne(doc);
     }
 }
