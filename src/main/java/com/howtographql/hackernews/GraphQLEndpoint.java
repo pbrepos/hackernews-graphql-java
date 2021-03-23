@@ -2,6 +2,7 @@ package com.howtographql.hackernews;
 
 import com.coxautodev.graphql.tools.SchemaParser;
 import com.howtographql.hackernews.repo.LinkRepository;
+import com.howtographql.hackernews.resolvers.Mutation;
 import com.howtographql.hackernews.resolvers.Query;
 import graphql.schema.GraphQLSchema;
 import graphql.servlet.SimpleGraphQLServlet;
@@ -21,7 +22,7 @@ public class GraphQLEndpoint extends SimpleGraphQLServlet {
         LinkRepository linkRepository = new LinkRepository();
         return SchemaParser.newParser()
                 .file("schema.graphqls")
-                .resolvers(new Query(linkRepository))
+                .resolvers(new Query(linkRepository), new Mutation(linkRepository))
                 .build()
                 .makeExecutableSchema();
     }
