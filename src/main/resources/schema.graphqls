@@ -1,0 +1,17 @@
+schema {
+    query: Query
+}
+
+type Link {
+    url: String!
+    description: String!
+}
+
+type Query {
+    allLinks: [Link]
+   linkByUrl (url: String!) : Link
+}
+
+
+#type Mutation {
+#}
