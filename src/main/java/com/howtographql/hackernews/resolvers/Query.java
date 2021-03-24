@@ -2,7 +2,7 @@ package com.howtographql.hackernews.resolvers;
 
 import com.coxautodev.graphql.tools.GraphQLRootResolver;
 import com.howtographql.hackernews.repo.LinkRepository;
-import com.howtographql.hackernews.resolvers.POJO.Link;
+import com.howtographql.hackernews.model.POJO.Link;
 
 import java.util.List;
 

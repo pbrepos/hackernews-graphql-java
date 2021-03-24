@@ -1,4 +1,4 @@
-package com.howtographql.hackernews.resolvers.POJO;
+package com.howtographql.hackernews.model.POJO;
 
 public class Link {
 

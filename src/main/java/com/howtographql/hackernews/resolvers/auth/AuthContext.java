@@ -1,6 +1,6 @@
 package com.howtographql.hackernews.resolvers.auth;
 
-import com.howtographql.hackernews.resolvers.POJO.User;
+import com.howtographql.hackernews.model.POJO.User;
 import graphql.servlet.GraphQLContext;
 
 import javax.servlet.http.HttpServletRequest;

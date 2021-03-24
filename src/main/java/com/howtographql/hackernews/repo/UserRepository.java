@@ -1,6 +1,6 @@
 package com.howtographql.hackernews.repo;
 
-import com.howtographql.hackernews.resolvers.POJO.User;
+import com.howtographql.hackernews.model.POJO.User;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 import org.bson.types.ObjectId;

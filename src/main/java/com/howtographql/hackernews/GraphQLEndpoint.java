@@ -3,12 +3,11 @@ package com.howtographql.hackernews;
 import com.coxautodev.graphql.tools.SchemaParser;
 import com.howtographql.hackernews.repo.LinkRepository;
 import com.howtographql.hackernews.repo.UserRepository;
-import com.howtographql.hackernews.resolvers.LinkResolver;
-import com.howtographql.hackernews.resolvers.Mutation;
-import com.howtographql.hackernews.resolvers.POJO.User;
-import com.howtographql.hackernews.resolvers.Query;
-import com.howtographql.hackernews.resolvers.SigninResolver;
+import com.howtographql.hackernews.repo.VoteRepository;
+import com.howtographql.hackernews.resolvers.*;
+import com.howtographql.hackernews.model.POJO.User;
 import com.howtographql.hackernews.resolvers.auth.AuthContext;
+import com.howtographql.hackernews.scalars.Scalars;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import graphql.schema.GraphQLSchema;
@@ -26,6 +25,7 @@ public class GraphQLEndpoint extends SimpleGraphQLServlet {
 
     private static final LinkRepository LINK_REPOSITORY;
     private static final UserRepository USER_REPOSITORY;
+    private static final VoteRepository VOTE_REPOSITORY;
 
 
     static {
@@ -34,6 +34,7 @@ public class GraphQLEndpoint extends SimpleGraphQLServlet {
         MongoDatabase mongoDatabase = new MongoClient().getDatabase("hackernews");
         LINK_REPOSITORY = new LinkRepository(mongoDatabase.getCollection("links"));
         USER_REPOSITORY = new UserRepository(mongoDatabase.getCollection("users"));
+        VOTE_REPOSITORY = new VoteRepository(mongoDatabase.getCollection("votes"));
 
     }
 
@@ -47,9 +48,11 @@ public class GraphQLEndpoint extends SimpleGraphQLServlet {
                 .file("schema.graphqls")
                 .resolvers(
                         new Query(LINK_REPOSITORY),
-                        new Mutation(LINK_REPOSITORY, USER_REPOSITORY),
+                        new Mutation(LINK_REPOSITORY, USER_REPOSITORY, VOTE_REPOSITORY),
                         new SigninResolver(),
-                        new LinkResolver(USER_REPOSITORY))
+                        new LinkResolver(USER_REPOSITORY),
+                        new VoteResolver(LINK_REPOSITORY, USER_REPOSITORY))
+                .scalars(Scalars.dateTime)
                 .build()
                 .makeExecutableSchema();
     }

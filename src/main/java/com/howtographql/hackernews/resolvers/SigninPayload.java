@@ -1,6 +1,6 @@
 package com.howtographql.hackernews.resolvers;
 
-import com.howtographql.hackernews.resolvers.POJO.User;
+import com.howtographql.hackernews.model.POJO.User;
 
 public class SigninPayload {
     private final String token;
