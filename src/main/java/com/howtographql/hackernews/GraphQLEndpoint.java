@@ -16,6 +16,7 @@ import graphql.GraphQLError;
 import graphql.schema.GraphQLSchema;
 import graphql.servlet.GraphQLContext;
 import graphql.servlet.SimpleGraphQLServlet;
+import io.leangen.graphql.GraphQLSchemaGenerator;
 import org.jetbrains.annotations.NotNull;
 
 import javax.servlet.annotation.WebServlet;
@@ -47,19 +48,29 @@ public class GraphQLEndpoint extends SimpleGraphQLServlet {
         super(buildSchema());
     }
 
-    @NotNull
+//    @NotNull
+//    private static GraphQLSchema buildSchema() {
+//        return SchemaParser.newParser()
+//                .file("schema.graphqls")
+//                .resolvers(
+//                        new Query(LINK_REPOSITORY),
+//                        new Mutation(LINK_REPOSITORY, USER_REPOSITORY, VOTE_REPOSITORY),
+//                        new SigninResolver(),
+//                        new LinkResolver(USER_REPOSITORY),
+//                        new VoteResolver(LINK_REPOSITORY, USER_REPOSITORY))
+//                .scalars(Scalars.dateTime)
+//                .build()
+//                .makeExecutableSchema();
+//    }
+
     private static GraphQLSchema buildSchema() {
-        return SchemaParser.newParser()
-                .file("schema.graphqls")
-                .resolvers(
-                        new Query(LINK_REPOSITORY),
-                        new Mutation(LINK_REPOSITORY, USER_REPOSITORY, VOTE_REPOSITORY),
-                        new SigninResolver(),
-                        new LinkResolver(USER_REPOSITORY),
-                        new VoteResolver(LINK_REPOSITORY, USER_REPOSITORY))
-                .scalars(Scalars.dateTime)
-                .build()
-                .makeExecutableSchema();
+        Query query = new Query(LINK_REPOSITORY); //create or inject the service beans
+        LinkResolver linkResolver = new LinkResolver(USER_REPOSITORY);
+        Mutation mutation = new Mutation(LINK_REPOSITORY, USER_REPOSITORY, VOTE_REPOSITORY);
+
+        return new GraphQLSchemaGenerator()
+                .withOperationsFromSingletons(query, linkResolver, mutation) //register the beans
+                .generate(); //done :)
     }
 
     @Override

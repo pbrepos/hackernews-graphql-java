@@ -11,6 +11,8 @@ import com.howtographql.hackernews.resolvers.auth.AuthContext;
 import com.howtographql.hackernews.resolvers.auth.AuthData;
 import graphql.GraphQLException;
 import graphql.schema.DataFetchingEnvironment;
+import io.leangen.graphql.annotations.GraphQLMutation;
+import io.leangen.graphql.annotations.GraphQLRootContext;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -27,9 +29,8 @@ public class Mutation implements GraphQLRootResolver {
         this.userRepository = userRepository;
         this.voteRepository = voteRepository;
     }
-
-    public Link createLink(String url, String description, DataFetchingEnvironment environment) {
-        AuthContext context = environment.getContext();
+    @GraphQLMutation
+    public Link createLink(String url, String description, @GraphQLRootContext AuthContext context) {
         Link newLink = new Link(url, description,context.getUser().getId());
         linkRepository.saveLink(newLink);
         return newLink;
